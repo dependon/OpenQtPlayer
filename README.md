@@ -1,1 +1,3 @@
 openQtMovie
+利用QMediaPlay(multimedia)的技术实现的一个简单的播放器
+
