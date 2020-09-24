@@ -98,6 +98,7 @@ void MainWindow::setTimeEnd()
 void MainWindow::saveAllSetting()
 {
     QSettings settings(SETTINGPATH,QSettings::IniFormat);
+    settings.clear();
     settings.setValue("Movie/Voice",ui->voiceSlider->value());
     int indexLocal=1;
     if (m_player->isMuted()) {
@@ -189,6 +190,60 @@ void MainWindow::setMediaVoice(int index)
         ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-low"));
     } else if (index <=100) {
         ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-medium"));
+    }
+}
+
+void MainWindow::openFiles()
+{
+    QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+                                                          windowTitle(),
+                                                          tr("All videos (*)(%1)").arg(ApisupportSuffix().join(" "))
+                                                          , 0,
+                                                          QFileDialog::HideNameFilterDetails);
+    int index=0;
+    for(auto filename :filenames)
+    {
+        if(!filename.isEmpty()){
+            m_playlist->addMedia(QUrl::fromLocalFile(filename));
+            if(isExistencelocallist(filename))
+            {
+                m_localPaths <<filename;
+                QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
+                item->setText(filename);
+                if(index==0)
+                {
+                    ui->locallistWidget->setCurrentItem(item);
+                    m_player->setMedia(QUrl::fromLocalFile(filename));
+                    mediaPlay();
+                    setWindowTitle(QFileInfo(filename).fileName());
+                    for(int i=0;i<m_playlist->mediaCount();i++)
+                    {
+                        if(m_player->currentMedia()==m_playlist->media(i))
+                        {
+                            m_playlist->setCurrentIndex(i);
+                        }
+                    }
+                }
+
+            }
+            else {
+                if(index==0)
+                {
+                    ApiSetlocallistcurrentitem(ui->locallistWidget,filename);
+                    m_player->setMedia(QUrl::fromLocalFile(filename));
+                    mediaPlay();
+                    setWindowTitle(QFileInfo(filename).fileName());
+                    for(int i=0;i<m_playlist->mediaCount();i++)
+                    {
+                        if(m_player->currentMedia()==m_playlist->media(i))
+                        {
+                            m_playlist->setCurrentIndex(i);
+                        }
+                    }
+                }
+            }
+            index++;
+        }
     }
 }
 
@@ -385,49 +440,7 @@ void MainWindow::on_VoiceBtn_clicked()
 
 void MainWindow::on_openFileBtn_clicked()
 {
-//    QString filename = QFileDialog::getOpenFileName(this, "打开媒体文件", nullptr);
-    QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
-                                                          windowTitle(),
-                                                          tr("All videos (*)(%1)").arg(ApisupportSuffix().join(" "))
-                                                          , 0,
-                                                          QFileDialog::HideNameFilterDetails);
-    int index=0;
-    for(auto filename :filenames)
-    {
-        if(!filename.isEmpty()){
-            m_playlist->addMedia(QUrl::fromLocalFile(filename));
-            if(isExistencelocallist(filename))
-            {
-                m_localPaths <<filename;
-                QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-                item->setText(filename);
-                if(index==0)
-                {
-                    ui->locallistWidget->setCurrentItem(item);
-                    m_player->setMedia(QUrl::fromLocalFile(filename));
-                    mediaPlay();
-                    setWindowTitle(QFileInfo(filename).fileName());
-                }
-            }
-            else {
-                if(index==0)
-                {
-                    ApiSetlocallistcurrentitem(ui->locallistWidget,filename);
-                    m_player->setMedia(QUrl::fromLocalFile(filename));
-                    mediaPlay();
-                    setWindowTitle(QFileInfo(filename).fileName());
-                    for(int i=0;i<m_playlist->mediaCount();i++)
-                    {
-                        if(m_player->currentMedia()==m_playlist->media(i))
-                        {
-                            m_playlist->setCurrentIndex(i);
-                        }
-                    }
-                }
-            }
-            index++;
-        }
-    }
+    openFiles();
 }
 
 void MainWindow::on_hideStackBtn_clicked()
@@ -448,4 +461,25 @@ void MainWindow::on_hideStackBtn_clicked()
 void MainWindow::on_locallistWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     playExistenceLocalPath(item->text());
+}
+
+void MainWindow::on_localBtnAdd_clicked()
+{
+    openFiles();
+}
+
+void MainWindow::on_localBtnDel_clicked()
+{
+    if(nullptr!=ui->locallistWidget->currentItem())
+    {
+        QString filename=ui->locallistWidget->currentItem()->text();
+        QMediaContent  mediaContent = QMediaContent(QUrl::fromLocalFile(filename));
+        for(int i=0;i<m_playlist->mediaCount();i++){
+            if(mediaContent==m_playlist->media(i))
+            {
+                m_playlist->removeMedia(i);
+                ui->locallistWidget->takeItem(ui->locallistWidget->currentRow());
+            }
+        }
+    }
 }

@@ -62,6 +62,9 @@ public:
 
     //设置音量
     void setMediaVoice(int index);
+
+    //openFiles
+    void openFiles();
 protected:
     void resizeEvent(QResizeEvent *event) override;
 private slots:
@@ -85,6 +88,10 @@ private slots:
     void on_hideStackBtn_clicked();
 
     void on_locallistWidget_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_localBtnAdd_clicked();
+
+    void on_localBtnDel_clicked();
 
 private:
     Ui::MainWindow *ui;
