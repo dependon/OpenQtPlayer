@@ -85,7 +85,19 @@ void MainWindow::resizeMovieWindow()
 
 void MainWindow::setUITime()
 {
-    ui->timeLabel->setText(m_currentTime+"/"+m_totalTime);
+    if(m_player->state()==QMediaPlayer::StoppedState)
+    {
+        QTime timer(0,0,0);
+        timer = timer.addMSecs(m_player->duration());
+        m_totalTime=timer.toString("hh:mm:ss");
+    }
+    if(nullptr!=m_totalTime)
+    {
+        ui->timeLabel->setText(m_currentTime+"/"+m_totalTime);
+    }
+    else {
+        ui->timeLabel->setText("00:00:00/00:00:00");
+    }
 }
 
 void MainWindow::setTimeEnd()
@@ -93,6 +105,7 @@ void MainWindow::setTimeEnd()
     m_currentTime="00:00:00";
     m_totalTime="00:00:00";
     ui->movieSlider->setValue(0);
+    ui->timeLabel->setText("00:00:00/00:00:00");
 }
 
 void MainWindow::saveAllSetting()
@@ -403,7 +416,6 @@ void MainWindow::on_stopBtn_clicked()
     m_player->stop();
     QTimer::singleShot(100,[=]{
         setTimeEnd();
-        setUITime();
     });
 
 }
