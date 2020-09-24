@@ -26,17 +26,23 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp \
-    normalAPI.cpp
+        ./view/mainwindow.cpp \
+        ./model/normalAPI.cpp
 
 HEADERS += \
-        mainwindow.h \
-    normalAPI.h
+        ./view/mainwindow.h \
+        ./model/normalAPI.h
 
 FORMS += \
-        mainwindow.ui
+        ./view/mainwindow.ui
 
+INCLUDEPATH += view \
+               model
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES +=
+
+RESOURCES +=

@@ -64,6 +64,7 @@ void MainWindow::initConnect()
     //connect(ui->sliderProgress,SIGNAL(valueChanged(int)), this, SLOT(sliderProgressValueChanged(int)));
     connect(ui->movieSlider, SIGNAL(sliderMoved(int)), this, SLOT(slotsliderMoved(int)));
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), SLOT(slotmediaStatusChange(QMediaPlayer::MediaStatus)));
+    connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)), SLOT(slotstateChange(QMediaPlayer::State)));
     connect(ui->voiceSlider, SIGNAL(valueChanged(int)), this, SLOT(slotsvoiceChange(int)));
 }
 
@@ -72,9 +73,7 @@ void MainWindow::initUi()
     ui->menuBar->hide();
     ui->statusBar->hide();
     ui->mainToolBar->hide();
-    setWindowTitle(tr("are you crazzy!!!"));
-    //    setStyleSheet("color:gray; background-color:black;");
-    //    setStyleSheet("border:0px solid red;");
+    setWindowTitle(tr("openQtMovie"));
 }
 
 void MainWindow::resizeMovieWindow()
@@ -141,10 +140,12 @@ void MainWindow::initAllSetting()
     if(1==lastVoiceState)
     {
         m_player->setMuted(true);
+        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
     }
     else
     {
         m_player->setMuted(false);
+        setMediaVoice(m_player->volume());
     }
 
 }
@@ -176,6 +177,18 @@ void MainWindow::playExistenceLocalPath(const QString &filename)
         {
             m_playlist->setCurrentIndex(i);
         }
+    }
+}
+
+void MainWindow::setMediaVoice(int index)
+{
+    m_player->setVolume(index);
+    if (index == 0) {
+        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
+    } else if (index < 50) {
+        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-low"));
+    } else if (index <=100) {
+        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-medium"));
     }
 }
 
@@ -215,6 +228,17 @@ void MainWindow::slotsliderMoved(int index)
     m_player->setPosition(index);
 }
 
+void MainWindow::slotstateChange(QMediaPlayer::State state)
+{
+    if (state == QMediaPlayer::PlayingState) {
+        ui->playBtn->setIcon(QIcon::fromTheme("media-playback-pause"));
+    } else if (state == QMediaPlayer::PausedState) {
+        ui->playBtn->setIcon(QIcon::fromTheme("media-playback-start"));
+    } else if (state == QMediaPlayer::StoppedState) {
+        ui->playBtn->setIcon(QIcon::fromTheme("media-playback-start"));
+    }
+}
+
 void MainWindow::slotmediaStatusChange(QMediaPlayer::MediaStatus status)
 {
     if (status == QMediaPlayer::EndOfMedia) {//自动播放下一个
@@ -229,7 +253,7 @@ void MainWindow::slotmediaStatusChange(QMediaPlayer::MediaStatus status)
 
 void MainWindow::slotsvoiceChange(int index)
 {
-    m_player->setVolume(index);
+    setMediaVoice(index);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -277,8 +301,14 @@ void MainWindow::on_playBtn_clicked()
             m_player->pause();
         } else if (m_player->state() == QMediaPlayer::PausedState) {
             mediaPlay();
+            QString path = ApiUrl2localPath(m_player->currentMedia().canonicalUrl());
+            ApiSetlocallistcurrentitem(ui->locallistWidget,path);
+            setWindowTitle(QFileInfo(path).fileName());
         } else if (m_player->state() == QMediaPlayer::StoppedState) {
             mediaPlay();
+            QString path = ApiUrl2localPath(m_player->currentMedia().canonicalUrl());
+            ApiSetlocallistcurrentitem(ui->locallistWidget,path);
+            setWindowTitle(QFileInfo(path).fileName());
         }
     }
 }
@@ -330,11 +360,15 @@ void MainWindow::on_fullScreenBtn_clicked()
         showFullScreen();
         ui->stackFrame->hide();
         resizeMovieWindow();
+        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
+        ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-restore"));
     }
     else {
         showNormal();
         ui->stackFrame->show();
         resizeMovieWindow();
+        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
+        ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-fullscreen"));
     }
 }
 
@@ -342,8 +376,10 @@ void MainWindow::on_VoiceBtn_clicked()
 {
     if (m_player->isMuted()) {
         m_player->setMuted(false);
+        setMediaVoice(m_player->volume());
     } else {
         m_player->setMuted(true);
+        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
     }
 }
 
@@ -396,15 +432,16 @@ void MainWindow::on_openFileBtn_clicked()
 
 void MainWindow::on_hideStackBtn_clicked()
 {
-
     if(ui->stackFrame->isVisible())
     {
         ui->stackFrame->hide();
         resizeMovieWindow();
+        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
     }
     else {
         ui->stackFrame->show();
         resizeMovieWindow();
+        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
     }
 }
 

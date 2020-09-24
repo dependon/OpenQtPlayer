@@ -60,6 +60,8 @@ public:
     //播放已经存在的本地文件
     void playExistenceLocalPath(const QString & filename);
 
+    //设置音量
+    void setMediaVoice(int index);
 protected:
     void resizeEvent(QResizeEvent *event) override;
 private slots:
@@ -76,6 +78,7 @@ private slots:
     void slotsliderReleased();
     void slotsliderMoved(int index);
 
+    void slotstateChange(QMediaPlayer::State state);
     void slotmediaStatusChange(QMediaPlayer::MediaStatus status);
     void slotsvoiceChange(int index);
 
