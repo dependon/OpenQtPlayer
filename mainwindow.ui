@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>939</width>
-    <height>453</height>
+    <width>904</width>
+    <height>433</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
@@ -27,18 +30,43 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,0">
       <property name="spacing">
        <number>0</number>
       </property>
       <item>
-       <widget class="QGraphicsView" name="graphicsView"/>
+       <widget class="QGraphicsView" name="graphicsView">
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QFrame" name="stackFrame">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
          <item>
@@ -55,6 +83,9 @@
              <width>200</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
            </property>
            <property name="currentIndex">
             <number>0</number>
@@ -74,7 +105,11 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QListWidget" name="locallistWidget"/>
+              <widget class="QListWidget" name="locallistWidget">
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -92,11 +127,15 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <property name="horizontalSpacing">
+             <property name="spacing">
               <number>0</number>
              </property>
              <item row="1" column="0">
-              <widget class="QTreeView" name="urltreeView"/>
+              <widget class="QTreeView" name="urltreeView">
+               <property name="toolTipDuration">
+                <number>0</number>
+               </property>
+              </widget>
              </item>
              <item row="0" column="0">
               <widget class="QLineEdit" name="lineEdit"/>
@@ -128,6 +167,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,1,0,1">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QPushButton" name="openFileBtn">
           <property name="text">
@@ -165,6 +207,9 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QPushButton" name="previousBtn">
           <property name="text">
@@ -198,12 +243,15 @@
       <item>
        <widget class="QPushButton" name="hideStackBtn">
         <property name="text">
-         <string>hihidestack</string>
+         <string>hidestack</string>
         </property>
        </widget>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <item>
          <widget class="QPushButton" name="fullScreenBtn">
           <property name="text">
@@ -222,7 +270,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>939</width>
+     <width>904</width>
      <height>36</height>
     </rect>
    </property>

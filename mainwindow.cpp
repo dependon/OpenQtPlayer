@@ -5,6 +5,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QListWidgetItem>
+#include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,13 +17,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    saveAllSetting();
     delete ui;
 }
 
 void MainWindow::init()
 {
+    initUi();
     initNew();
     initConnect();
+    initAllSetting();
 }
 
 void MainWindow::initNew()
@@ -47,7 +51,8 @@ void MainWindow::initNew()
 
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
-//   this->
+
+
 }
 
 void MainWindow::initConnect()
@@ -60,6 +65,16 @@ void MainWindow::initConnect()
     connect(ui->movieSlider, SIGNAL(sliderMoved(int)), this, SLOT(slotsliderMoved(int)));
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), SLOT(slotmediaStatusChange(QMediaPlayer::MediaStatus)));
     connect(ui->voiceSlider, SIGNAL(valueChanged(int)), this, SLOT(slotsvoiceChange(int)));
+}
+
+void MainWindow::initUi()
+{
+    ui->menuBar->hide();
+    ui->statusBar->hide();
+    ui->mainToolBar->hide();
+    setWindowTitle(tr("are you crazzy!!!"));
+    //    setStyleSheet("color:gray; background-color:black;");
+    //    setStyleSheet("border:0px solid red;");
 }
 
 void MainWindow::resizeMovieWindow()
@@ -81,6 +96,65 @@ void MainWindow::setTimeEnd()
     ui->movieSlider->setValue(0);
 }
 
+void MainWindow::saveAllSetting()
+{
+    QSettings settings(SETTINGPATH,QSettings::IniFormat);
+    settings.setValue("Movie/Voice",ui->voiceSlider->value());
+    int indexLocal=1;
+    if (m_player->isMuted()) {
+     settings.setValue("Movie/VoiceState",1);
+    } else {
+     settings.setValue("Movie/VoiceState",2);
+    }
+    for(QString str :ApiGetListWidgetPaths(ui->locallistWidget))
+    {
+        settings.setValue("Movie/localPath"+QString::number(indexLocal++),str);
+    }
+}
+
+void MainWindow::initAllSetting()
+{
+    QSettings settings(SETTINGPATH,QSettings::IniFormat);
+
+    //取值本地地址
+    QString strLocalPath;
+    int localIndex=1;
+    do
+    {
+        strLocalPath=settings.value("Movie/localPath"+QString::number(localIndex++)).toString();
+        if(nullptr!=strLocalPath)
+        {
+            m_playlist->addMedia(QUrl::fromLocalFile(strLocalPath));
+            //
+            QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
+            item->setText(strLocalPath);
+            ui->locallistWidget->setCurrentItem(item);
+        }
+    }while(nullptr!=strLocalPath);
+    //上次音量大小
+    int lastVoice= settings.value("Movie/Voice").toInt();
+    ui->voiceSlider->setValue(lastVoice);
+    m_player->setVolume(lastVoice);
+
+    //上次音量状态
+    int lastVoiceState= settings.value("Movie/VoiceState").toInt();
+    if(1==lastVoiceState)
+    {
+        m_player->setMuted(true);
+    }
+    else
+    {
+        m_player->setMuted(false);
+    }
+
+}
+
+void MainWindow::mediaPlay()
+{
+    m_player->play();
+    resizeMovieWindow();
+}
+
 bool MainWindow::isExistencelocallist(const QString &path)
 {
     bool iRet=true;
@@ -90,6 +164,21 @@ bool MainWindow::isExistencelocallist(const QString &path)
     }
     return iRet;
 }
+
+void MainWindow::playExistenceLocalPath(const QString &filename)
+{
+    m_player->setMedia(QUrl::fromLocalFile(filename));
+    mediaPlay();
+    setWindowTitle(QFileInfo(filename).fileName());
+    for(int i=0;i<m_playlist->mediaCount();i++)
+    {
+        if(m_player->currentMedia()==m_playlist->media(i))
+        {
+            m_playlist->setCurrentIndex(i);
+        }
+    }
+}
+
 
 void MainWindow::slotdurationChange(qint64 index)
 {
@@ -112,8 +201,8 @@ void MainWindow::slotpositionChange(qint64 index)
 
 void MainWindow::slotvolumeChange(int index)
 {
-    ui->movieSlider->setValue(index);
-    ui->movieSlider->setToolTip(QString::number(index));
+    ui->voiceSlider->setValue(index);
+    ui->voiceSlider->setToolTip(QString::number(index));
 }
 
 void MainWindow::slotsliderReleased()
@@ -167,16 +256,17 @@ void MainWindow::on_previousBtn_clicked()
             mdeia = m_playlist->media(m_playlist->currentIndex());
         }
         m_player->setMedia(mdeia);
-        m_player->play();
+        mediaPlay();
 
         QString path = ApiUrl2localPath(m_player->currentMedia().canonicalUrl());
         ApiSetlocallistcurrentitem(ui->locallistWidget,path);
+        setWindowTitle(QFileInfo(path).fileName());
     }
     else {
         m_url->previous();
         QMediaContent mdeia = m_url->media(m_url->currentIndex());
         m_player->setMedia(mdeia);
-        m_player->play();
+        mediaPlay();
     }
 }
 
@@ -186,9 +276,9 @@ void MainWindow::on_playBtn_clicked()
         if (m_player->state() == QMediaPlayer::PlayingState) {
             m_player->pause();
         } else if (m_player->state() == QMediaPlayer::PausedState) {
-            m_player->play();
+            mediaPlay();
         } else if (m_player->state() == QMediaPlayer::StoppedState) {
-            m_player->play();
+            mediaPlay();
         }
     }
 }
@@ -210,15 +300,16 @@ void MainWindow::on_nextBtn_clicked()
             mdeia = m_playlist->media(m_playlist->currentIndex());
         }
         m_player->setMedia(mdeia);
-        m_player->play();
+        mediaPlay();
         QString path = ApiUrl2localPath(m_player->currentMedia().canonicalUrl());
         ApiSetlocallistcurrentitem(ui->locallistWidget,path);
+        setWindowTitle(QFileInfo(path).fileName());
     }
     else {
         m_url->next();
         QMediaContent mdeia = m_url->media(m_url->currentIndex());
         m_player->setMedia(mdeia);
-        m_player->play();
+        mediaPlay();
     }
 }
 
@@ -237,13 +328,13 @@ void MainWindow::on_fullScreenBtn_clicked()
     if (!this->isFullScreen())
     {
         showFullScreen();
-        ui->menuBar->hide();
-        ui->statusBar->hide();
+        ui->stackFrame->hide();
+        resizeMovieWindow();
     }
     else {
         showNormal();
-        ui->menuBar->show();
-        ui->statusBar->show();
+        ui->stackFrame->show();
+        resizeMovieWindow();
     }
 }
 
@@ -258,52 +349,66 @@ void MainWindow::on_VoiceBtn_clicked()
 
 void MainWindow::on_openFileBtn_clicked()
 {
-    QString filename = QFileDialog::getOpenFileName(this, "打开媒体文件", nullptr);
-    if(!filename.isEmpty()){
-        m_player->setMedia(QUrl::fromLocalFile(filename));
-        m_player->play();
-        setWindowTitle(QFileInfo(filename).fileName());
-        m_playlist->addMedia(QUrl::fromLocalFile(filename));
-        resizeMovieWindow();
-        QTimer::singleShot(1000,[=]{
-//            QStringList SLMD = m_player->availableMetaData();
-//            //qDebug() << SLMD;
-//            QString str;
-//            for(int i=0; i<SLMD.size(); i++){
-//                if(SLMD.at(i)=="PixelAspectRatio" || SLMD.at(i)=="Resolution"){
-//                    str= SLMD.at(i) + ": " + QString::number(m_player->metaData(SLMD.at(i)).toSize().width()) + " X " + QString::number(m_player->metaData(SLMD.at(i)).toSize().height()) + "\n";
-//                    qDebug()<<str;
-//                }else{
-//                    str= SLMD.at(i) + ": " + m_player->metaData(SLMD.at(i)).toString() + "\n";
-//                    qDebug()<<str;
-//                }
-//            }
-
-//            qDebug()<<m_player->mediaStatus();
-//            qDebug()<<m_player-> isMuted() ;
-            qDebug()<<m_player-> isAudioAvailable() ;
-            qDebug()<<m_player-> isVideoAvailable() ;
-            qDebug()<<m_player-> isSeekable() ;
-            if(m_player-> isSeekable() && isExistencelocallist(filename))
+//    QString filename = QFileDialog::getOpenFileName(this, "打开媒体文件", nullptr);
+    QStringList filenames = QFileDialog::getOpenFileNames(this, tr("Open File"),
+                                                          windowTitle(),
+                                                          tr("All videos (*)(%1)").arg(ApisupportSuffix().join(" "))
+                                                          , 0,
+                                                          QFileDialog::HideNameFilterDetails);
+    int index=0;
+    for(auto filename :filenames)
+    {
+        if(!filename.isEmpty()){
+            m_playlist->addMedia(QUrl::fromLocalFile(filename));
+            if(isExistencelocallist(filename))
             {
                 m_localPaths <<filename;
                 QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
                 item->setText(filename);
-                ui->locallistWidget->setCurrentItem(item);
+                if(index==0)
+                {
+                    ui->locallistWidget->setCurrentItem(item);
+                    m_player->setMedia(QUrl::fromLocalFile(filename));
+                    mediaPlay();
+                    setWindowTitle(QFileInfo(filename).fileName());
+                }
             }
-        });
-
+            else {
+                if(index==0)
+                {
+                    ApiSetlocallistcurrentitem(ui->locallistWidget,filename);
+                    m_player->setMedia(QUrl::fromLocalFile(filename));
+                    mediaPlay();
+                    setWindowTitle(QFileInfo(filename).fileName());
+                    for(int i=0;i<m_playlist->mediaCount();i++)
+                    {
+                        if(m_player->currentMedia()==m_playlist->media(i))
+                        {
+                            m_playlist->setCurrentIndex(i);
+                        }
+                    }
+                }
+            }
+            index++;
+        }
     }
 }
 
 void MainWindow::on_hideStackBtn_clicked()
 {
-//    ui->hideStackBtn->
+
     if(ui->stackFrame->isVisible())
     {
         ui->stackFrame->hide();
+        resizeMovieWindow();
     }
     else {
         ui->stackFrame->show();
+        resizeMovieWindow();
     }
+}
+
+void MainWindow::on_locallistWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    playExistenceLocalPath(item->text());
 }

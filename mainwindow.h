@@ -10,6 +10,8 @@
 
 #include "normalAPI.h"
 
+#define SETTINGPATH "./setting/config.ini"
+
 namespace Ui {
 class MainWindow;
 }
@@ -22,17 +24,42 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    //整体初始化函数
     void init();
+
+    //初始化类创建
     void initNew();
+
+    //初始化信号槽连接
     void initConnect();
 
+    //初始化UI
+    void initUi();
+
+    //自适应窗口
     void resizeMovieWindow();
 
+    //播放时间设置
     void setUITime();
 
+    //设置结束时间
     void setTimeEnd();
 
+    //保存所有配置
+    void saveAllSetting();
+
+    //初始化配置文件
+    void initAllSetting();
+
+    //自适应播放
+    void mediaPlay();
+
+    //是否在本地文件list中存在
     bool isExistencelocallist(const QString &path);
+
+    //播放已经存在的本地文件
+    void playExistenceLocalPath(const QString & filename);
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 private slots:
@@ -43,7 +70,6 @@ private slots:
     void on_fullScreenBtn_clicked();
     void on_VoiceBtn_clicked();
     void on_openFileBtn_clicked();
-
     void slotdurationChange(qint64 index);
     void slotpositionChange(qint64 index);
     void slotvolumeChange(int index);
@@ -54,6 +80,8 @@ private slots:
     void slotsvoiceChange(int index);
 
     void on_hideStackBtn_clicked();
+
+    void on_locallistWidget_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;
