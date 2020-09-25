@@ -172,10 +172,10 @@ void MainWindow::mediaPlay()
 
 bool MainWindow::isExistencelocallist(const QString &path)
 {
-    bool iRet=true;
+    bool iRet=false;
     if(ui->locallistWidget->findItems(path,Qt::MatchContains).count()>0)
     {
-        iRet=false;
+        iRet=true;
     }
     return iRet;
 }
@@ -217,9 +217,9 @@ void MainWindow::openFiles()
     for(auto filename :filenames)
     {
         if(!filename.isEmpty()){
-            m_playlist->addMedia(QUrl::fromLocalFile(filename));
-            if(isExistencelocallist(filename))
+            if(!isExistencelocallist(filename))
             {
+                m_playlist->addMedia(QUrl::fromLocalFile(filename));
                 m_localPaths <<filename;
                 QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
                 item->setText(filename);
@@ -240,6 +240,7 @@ void MainWindow::openFiles()
 
             }
             else {
+
                 if(index==0)
                 {
                     ApiSetlocallistcurrentitem(ui->locallistWidget,filename);
