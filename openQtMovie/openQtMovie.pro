@@ -4,10 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core gui multimedia multimediawidgets xml
+QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+CONFIG -= app_bundle
 TARGET = openQtMovie
 TEMPLATE = app
 
@@ -15,7 +15,7 @@ TEMPLATE = app
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
+#DEFINES += QT_DEPRECATED_WARNINGS
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -27,22 +27,41 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         ./view/mainwindow.cpp \
-        ./model/normalAPI.cpp
+        ./model/normalAPI.cpp \
+    view/addurldialog.cpp
 
 HEADERS += \
         ./view/mainwindow.h \
-        ./model/normalAPI.h
+        ./model/normalAPI.h \
+    view/addurldialog.h
 
 FORMS += \
-        ./view/mainwindow.ui
+        ./view/mainwindow.ui \
+    view/addurldialog.ui
 
 INCLUDEPATH += view \
                model
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
 
-DISTFILES +=
+isEmpty(PREFIX){
+    PREFIX = /usr
+}
 
-RESOURCES +=
+target.path = /opt/$${TARGET}/bin
+
+desktop.path = $$PREFIX/share/applications/
+desktop.files = $$PWD/openQtMovie.desktop
+
+icons.path = $$PREFIX/share/$${TARGET}/icon
+icons.files = $$PWD/image/play.svg
+
+dbus_service.path =  $$PREFIX/share/dbus-1/services
+dbus_service.files += $$PWD/com.openQtMovie.service
+
+INSTALLS += target icons desktop dbus_service
+
+DISTFILES += \
+com.openQtMovie.service
+
+RESOURCES += \
+    view/qrc.qrc

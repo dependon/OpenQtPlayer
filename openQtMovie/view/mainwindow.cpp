@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QListWidgetItem>
 #include <QSettings>
+#include <QFileInfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -19,6 +20,90 @@ MainWindow::~MainWindow()
 {
     saveAllSetting();
     delete ui;
+}
+
+void MainWindow::acceptargv(int &argc, char **argv)
+{
+    if(0!=argc)
+    {
+        QString path;
+        for(int i=0; i<argc; i++)//参数个数
+        {
+            path=argv[i];
+        }
+        openFileandPlay(path);
+    }
+}
+
+void MainWindow::openFileonly(const QString &filename)
+{
+    if(!filename.isEmpty()){
+        if(!isExistencelocallist(filename))
+        {
+            QFileInfo info(filename);
+            QString suffix="*."+info.suffix();
+            if(ApisupportSuffix().contains(suffix,Qt::CaseSensitive))
+            {
+                m_playlist->addMedia(QUrl::fromLocalFile(filename));
+                m_localPaths <<filename;
+                QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
+                item->setText(filename);
+            }
+
+        }
+    }
+}
+
+void MainWindow::openFileandPlay(const QString &filename)
+{
+    if(!filename.isEmpty()){
+        if(!isExistencelocallist(filename))
+        {
+            QFileInfo info(filename);
+            QString suffix="*."+info.suffix();
+            if(ApisupportSuffix().contains(suffix,Qt::CaseSensitive))
+            {
+               qDebug() <<info.path();
+               qDebug() <<info.filePath();
+               qDebug() << info.isFile();
+               qDebug() <<QCoreApplication::applicationDirPath();
+                m_playlist->addMedia(QUrl::fromLocalFile(filename));
+                m_localPaths <<filename;
+                QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
+                item->setText(filename);
+                ui->locallistWidget->setCurrentItem(item);
+                m_player->setMedia(QUrl::fromLocalFile(filename));
+                mediaPlay();
+                setWindowTitle(QFileInfo(filename).fileName());
+                for(int i=0;i<m_playlist->mediaCount();i++)
+                {
+                    if(m_player->currentMedia()==m_playlist->media(i))
+                    {
+                        m_playlist->setCurrentIndex(i);
+                    }
+                }
+            }
+        }
+        else {
+            QFileInfo info(filename);
+            QString suffix="*."+info.suffix();
+            if(ApisupportSuffix().contains(suffix,Qt::CaseSensitive))
+            {
+                ApiSetlocallistcurrentitem(ui->locallistWidget,filename);
+                m_player->setMedia(QUrl::fromLocalFile(filename));
+                mediaPlay();
+                setWindowTitle(QFileInfo(filename).fileName());
+                for(int i=0;i<m_playlist->mediaCount();i++)
+                {
+                    if(m_player->currentMedia()==m_playlist->media(i))
+                    {
+                        m_playlist->setCurrentIndex(i);
+                    }
+                }
+            }
+
+        }
+    }
 }
 
 void MainWindow::init()
@@ -73,7 +158,11 @@ void MainWindow::initUi()
     ui->menuBar->hide();
     ui->statusBar->hide();
     ui->mainToolBar->hide();
-    setWindowTitle(tr("openQtMovie"));
+    ui->switchListButton->hide();
+    setWindowTitle(tr("Movie"));
+    setWindowIcon(QIcon(":/image/play.svg"));
+
+
 }
 
 void MainWindow::resizeMovieWindow()
@@ -85,12 +174,10 @@ void MainWindow::resizeMovieWindow()
 
 void MainWindow::setUITime()
 {
-    if(m_player->state()==QMediaPlayer::StoppedState)
-    {
-        QTime timer(0,0,0);
-        timer = timer.addMSecs(m_player->duration());
-        m_totalTime=timer.toString("hh:mm:ss");
-    }
+
+    QTime timer(0,0,0);
+    timer = timer.addMSecs(m_player->duration());
+    m_totalTime=timer.toString("hh:mm:ss");
     if(nullptr!=m_totalTime)
     {
         ui->timeLabel->setText(m_currentTime+"/"+m_totalTime);
@@ -115,14 +202,16 @@ void MainWindow::saveAllSetting()
     settings.setValue("Movie/Voice",ui->voiceSlider->value());
     int indexLocal=1;
     if (m_player->isMuted()) {
-     settings.setValue("Movie/VoiceState",1);
+        settings.setValue("Movie/VoiceState",1);
     } else {
-     settings.setValue("Movie/VoiceState",2);
+        settings.setValue("Movie/VoiceState",2);
     }
     for(QString str :ApiGetListWidgetPaths(ui->locallistWidget))
     {
         settings.setValue("Movie/localPath"+QString::number(indexLocal++),str);
     }
+
+
 }
 
 void MainWindow::initAllSetting()
@@ -144,6 +233,10 @@ void MainWindow::initAllSetting()
             ui->locallistWidget->setCurrentItem(item);
         }
     }while(nullptr!=strLocalPath);
+    if(localIndex>1 ||ui->locallistWidget->count()>0)
+    {
+        ui->locallistWidget->setCurrentRow(0);
+    }
     //上次音量大小
     int lastVoice= settings.value("Movie/Voice").toInt();
     ui->voiceSlider->setValue(lastVoice);
@@ -161,7 +254,9 @@ void MainWindow::initAllSetting()
         m_player->setMuted(false);
         setMediaVoice(m_player->volume());
     }
-
+    ui->stackFrame->hide();
+    resizeMovieWindow();
+    ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
 }
 
 void MainWindow::mediaPlay()
@@ -331,6 +426,12 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     return QMainWindow::resizeEvent(event);
 }
 
+void MainWindow::showEvent(QShowEvent *event)
+{
+    resizeMovieWindow();
+    return QMainWindow::showEvent(event);
+}
+
 void MainWindow::on_previousBtn_clicked()
 {
 
@@ -417,6 +518,7 @@ void MainWindow::on_stopBtn_clicked()
     m_player->stop();
     QTimer::singleShot(100,[=]{
         setTimeEnd();
+        setWindowTitle(tr("Movie"));
     });
 
 }
@@ -461,12 +563,16 @@ void MainWindow::on_hideStackBtn_clicked()
     if(ui->stackFrame->isVisible())
     {
         ui->stackFrame->hide();
-        resizeMovieWindow();
+        QTimer::singleShot(50,[=]{
+            resizeMovieWindow();
+        });
         ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
     }
     else {
         ui->stackFrame->show();
-        resizeMovieWindow();
+        QTimer::singleShot(50,[=]{
+            resizeMovieWindow();
+        });
         ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
     }
 }

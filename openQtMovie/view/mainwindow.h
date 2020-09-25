@@ -24,6 +24,11 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
+    void acceptargv(int &argc, char **argv);
+
+
+
     //整体初始化函数
     void init();
 
@@ -65,8 +70,13 @@ public:
 
     //openFiles
     void openFiles();
+    void openFileonly(const QString &filename);
+
+    //打开该路径文件
+    void openFileandPlay(const QString & path);
 protected:
     void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 private slots:
     void on_previousBtn_clicked();
     void on_playBtn_clicked();
