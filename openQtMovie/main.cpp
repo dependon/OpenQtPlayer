@@ -13,7 +13,11 @@ int main(int argc, char *argv[])
         toOpenFiles = commandLine->positionalArguments();
     }
     qDebug()<<toOpenFiles;
-    w.acceptargv(argc, argv);
+    if(toOpenFiles.count()>0)
+    {
+        w.openFileandPlay(toOpenFiles.first());
+    }
+//    w.acceptargv(argc, argv);
     w.show();
 
     return a.exec();
