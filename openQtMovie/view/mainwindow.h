@@ -10,7 +10,7 @@
 
 #include "normalAPI.h"
 
-#define SETTINGPATH "./setting/config.ini"
+#define SETTINGPATH "/opt/openQtMovie/setting/config.ini"
 
 namespace Ui {
 class MainWindow;
@@ -73,7 +73,7 @@ public:
     void openFileonly(const QString &filename);
 
     //打开该路径文件
-    void openFileandPlay(const QString & path);
+    void openFileandPlay(const QString &filename);
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void showEvent(QShowEvent *event) override;

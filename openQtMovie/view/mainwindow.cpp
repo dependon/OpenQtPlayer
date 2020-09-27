@@ -37,17 +37,24 @@ void MainWindow::acceptargv(int &argc, char **argv)
 
 void MainWindow::openFileonly(const QString &filename)
 {
-    if(!filename.isEmpty()){
-        if(!isExistencelocallist(filename))
+    QString filePath=filename;
+    if(filePath.contains("file://"))
+    {
+        filePath.replace("file://","");
+    }
+    QFileInfo info(filePath);
+    QString suffix="*."+info.suffix();
+    filePath=info.canonicalFilePath();
+    if(!filePath.isEmpty() && info.isFile()){
+        if(!isExistencelocallist(filePath))
         {
-            QFileInfo info(filename);
-            QString suffix="*."+info.suffix();
+            qDebug()<<"是否为文件" <<info.isFile();
             if(ApisupportSuffix().contains(suffix,Qt::CaseSensitive))
             {
-                m_playlist->addMedia(QUrl::fromLocalFile(filename));
-                m_localPaths <<filename;
+                m_playlist->addMedia(QUrl::fromLocalFile(filePath));
+                m_localPaths <<filePath;
                 QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-                item->setText(filename);
+                item->setText(filePath);
             }
 
         }
@@ -56,25 +63,55 @@ void MainWindow::openFileonly(const QString &filename)
 
 void MainWindow::openFileandPlay(const QString &filename)
 {
-    if(!filename.isEmpty()){
-        if(!isExistencelocallist(filename))
+    QString filePath=filename;
+    if(filePath.contains("file://"))
+    {
+        filePath.replace("file://","");
+    }
+    QFileInfo info(filePath);
+    QString suffix="*."+info.suffix();
+//    qDebug()<<"是否为文件" <<info.isFile();
+//    qDebug()<<"1" <<info.path();
+//    qDebug()<<"2" <<info.absolutePath();
+//    qDebug()<<"3" <<info.canonicalPath();
+    qDebug()<<"33" <<info.canonicalFilePath();
+//    qDebug()<<"4" <<info.filePath();
+//    qDebug()<<"5" <<info.fileName();
+//    qDebug()<<"6" <<info.baseName();
+//    qDebug()<<"7" <<info.bundleName();
+//    qDebug()<<"8" <<info.completeBaseName();
+//    qDebug()<<"9" <<info.dir().path();
+//    qDebug()<<"10" <<info.dir().absolutePath();
+//    qDebug()<<"11" <<info.dir().canonicalPath();
+//    qDebug()<<"12" <<info.dir().absolutePath();
+//    qDebug()<<"13" <<info.dir().dirName();
+//    qDebug()<<"14" <<info.absoluteDir().path();
+//    qDebug()<<"15" <<info.absoluteDir().absolutePath();
+//    qDebug()<<"16" <<info.absoluteDir().canonicalPath();
+//    qDebug()<<"17" <<info.absoluteDir().absolutePath();
+//    qDebug()<<"18" <<info.absoluteDir().dirName();
+    filePath=info.canonicalFilePath();
+    if(!filePath.isEmpty() && info.isFile()){
+        if(filePath.contains("file://"))
         {
-            QFileInfo info(filename);
-            QString suffix="*."+info.suffix();
+            filePath.replace("file://","");
+        }
+        if(!isExistencelocallist(filePath))
+        {
             if(ApisupportSuffix().contains(suffix,Qt::CaseSensitive))
             {
-               qDebug() <<info.path();
-               qDebug() <<info.filePath();
-               qDebug() << info.isFile();
-               qDebug() <<QCoreApplication::applicationDirPath();
-                m_playlist->addMedia(QUrl::fromLocalFile(filename));
-                m_localPaths <<filename;
+                qDebug() <<info.path();
+                qDebug() <<info.filePath();
+                qDebug() << info.isFile();
+                qDebug() <<QCoreApplication::applicationDirPath();
+                m_playlist->addMedia(QUrl::fromLocalFile(filePath));
+                m_localPaths <<filePath;
                 QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-                item->setText(filename);
+                item->setText(filePath);
                 ui->locallistWidget->setCurrentItem(item);
-                m_player->setMedia(QUrl::fromLocalFile(filename));
+                m_player->setMedia(QUrl::fromLocalFile(filePath));
                 mediaPlay();
-                setWindowTitle(QFileInfo(filename).fileName());
+                setWindowTitle(QFileInfo(filePath).fileName());
                 for(int i=0;i<m_playlist->mediaCount();i++)
                 {
                     if(m_player->currentMedia()==m_playlist->media(i))
@@ -85,14 +122,12 @@ void MainWindow::openFileandPlay(const QString &filename)
             }
         }
         else {
-            QFileInfo info(filename);
-            QString suffix="*."+info.suffix();
             if(ApisupportSuffix().contains(suffix,Qt::CaseSensitive))
             {
-                ApiSetlocallistcurrentitem(ui->locallistWidget,filename);
-                m_player->setMedia(QUrl::fromLocalFile(filename));
+                ApiSetlocallistcurrentitem(ui->locallistWidget,filePath);
+                m_player->setMedia(QUrl::fromLocalFile(filePath));
                 mediaPlay();
-                setWindowTitle(QFileInfo(filename).fileName());
+                setWindowTitle(QFileInfo(filePath).fileName());
                 for(int i=0;i<m_playlist->mediaCount();i++)
                 {
                     if(m_player->currentMedia()==m_playlist->media(i))
@@ -311,7 +346,10 @@ void MainWindow::openFiles()
     int index=0;
     for(auto filename :filenames)
     {
-        if(!filename.isEmpty()){
+        QFileInfo info(filename);
+        filename=info.canonicalFilePath();
+
+        if(!filename.isEmpty() && info.isFile()){
             if(!isExistencelocallist(filename))
             {
                 m_playlist->addMedia(QUrl::fromLocalFile(filename));
