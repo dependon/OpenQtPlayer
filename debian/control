@@ -1,4 +1,4 @@
-Source: openQtMovie
+Source: openqtmovie
 Section: utils
 Priority: optional
 Maintainer: Deepin Packages Builder <packages@deepin.com>
@@ -9,8 +9,8 @@ Build-Depends: debhelper (>=9), qt5-qmake, qtbase5-dev, pkg-config,
 Standards-Version: 1.0.0
 Homepage: http://www.deepin.org
 
-Package: openQtMovie
+Package: openqtmovie
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: libqt5libqgtk2, kimageformat-plugins
-Description: openMovie.
+Description: openqtmovie.

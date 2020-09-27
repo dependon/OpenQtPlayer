@@ -10,7 +10,7 @@
 
 #include "normalAPI.h"
 
-#define SETTINGPATH "/opt/openQtMovie/setting/config.ini"
+#define SETTINGPATH "/opt/openqtmovie/setting/config.ini"
 
 namespace Ui {
 class MainWindow;

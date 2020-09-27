@@ -8,7 +8,7 @@ QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG -= app_bundle
-TARGET = openQtMovie
+TARGET = openqtmovie
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -50,13 +50,13 @@ isEmpty(PREFIX){
 target.path = /opt/$${TARGET}/bin
 
 desktop.path = $$PREFIX/share/applications/
-desktop.files = $$PWD/openQtMovie.desktop
+desktop.files = $$PWD/openqtmovie.desktop
 
 icons.path = $$PREFIX/share/$${TARGET}/icon
 icons.files = $$PWD/image/play.svg
 
 dbus_service.path =  $$PREFIX/share/dbus-1/services
-dbus_service.files += $$PWD/com.openQtMovie.service
+dbus_service.files += $$PWD/com.openqtmovie.service
 
 INSTALLS += target icons desktop dbus_service
 
