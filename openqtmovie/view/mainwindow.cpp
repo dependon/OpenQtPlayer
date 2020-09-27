@@ -394,6 +394,25 @@ void MainWindow::openFiles()
     }
 }
 
+void MainWindow::openFilesonly(const QStringList &filenames)
+{
+    for(auto filename :filenames)
+    {
+        QFileInfo info(filename);
+        filename=info.canonicalFilePath();
+
+        if(!filename.isEmpty() && info.isFile()){
+            if(!isExistencelocallist(filename))
+            {
+                m_playlist->addMedia(QUrl::fromLocalFile(filename));
+                m_localPaths <<filename;
+                QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
+                item->setText(filename);
+            }
+        }
+    }
+}
+
 
 void MainWindow::slotdurationChange(qint64 index)
 {

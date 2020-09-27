@@ -70,9 +70,11 @@ public:
 
     //openFiles
     void openFiles();
+
+    void openFilesonly(const QStringList &fileList);
+
     void openFileonly(const QString &filename);
 
-    //打开该路径文件
     void openFileandPlay(const QString &filename);
 protected:
     void resizeEvent(QResizeEvent *event) override;
