@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     if(toOpenFiles.count()>0)
     {
         w.openFileandPlay(toOpenFiles.first());
+
     }
 //    w.acceptargv(argc, argv);
     w.show();
