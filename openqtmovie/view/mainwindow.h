@@ -90,7 +90,9 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void showEvent(QShowEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent*event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
+    void mouseMoveEvent(QMouseEvent * event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private slots:
     void on_previousBtn_clicked();
     void on_playBtn_clicked();
