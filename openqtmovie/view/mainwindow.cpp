@@ -232,8 +232,8 @@ void MainWindow::initKey()
     });
 
     //左右切换影片
-    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Left),this), &QShortcut::activated, this, &MainWindow::on_nextBtn_clicked);
-    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Right),this), &QShortcut::activated, this, &MainWindow::on_previousBtn_clicked);
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Left),this), &QShortcut::activated, this, &MainWindow::on_previousBtn_clicked);
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Right),this), &QShortcut::activated, this, &MainWindow::on_nextBtn_clicked);
 
     //暂停和播放
     connect(new QShortcut(QKeySequence(Qt::Key_Enter),this), &QShortcut::activated, this, &MainWindow::on_playBtn_clicked);
