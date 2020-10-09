@@ -119,6 +119,7 @@ private slots:
 
     void on_localBtnDel_clicked();
 
+
 private:
     Ui::MainWindow *ui;
 

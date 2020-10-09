@@ -343,7 +343,7 @@ void MainWindow::setTimeEnd()
 void MainWindow::saveAllSetting()
 {
     QSettings settings(SETTINGPATH,QSettings::IniFormat);
-    //    settings.clear();
+    settings.clear();
     settings.setValue("Movie/Voice",ui->voiceSlider->value());
     int indexLocal=1;
     if (m_player->isMuted()) {
@@ -374,7 +374,10 @@ void MainWindow::initAllSetting()
             m_playlist->addMedia(QUrl::fromLocalFile(strLocalPath));
             //
             QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-            item->setText(strLocalPath);
+            item->setToolTip(strLocalPath);
+            item->setText(QFileInfo(strLocalPath).fileName());
+
+
             ui->locallistWidget->setCurrentItem(item);
         }
     }while(nullptr!=strLocalPath);
@@ -469,7 +472,8 @@ void MainWindow::openFiles()
                 m_playlist->addMedia(QUrl::fromLocalFile(filename));
                 m_localPaths <<filename;
                 QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-                item->setText(filename);
+                item->setText(info.fileName());
+                item->setToolTip(filename);
                 if(index==0)
                 {
                     ui->locallistWidget->setCurrentItem(item);
@@ -795,7 +799,7 @@ void MainWindow::on_hideStackBtn_clicked()
 
 void MainWindow::on_locallistWidget_itemDoubleClicked(QListWidgetItem *item)
 {
-    playExistenceLocalPath(item->text());
+    playExistenceLocalPath(item->toolTip());
 }
 
 void MainWindow::on_localBtnAdd_clicked()
@@ -807,7 +811,7 @@ void MainWindow::on_localBtnDel_clicked()
 {
     if(nullptr!=ui->locallistWidget->currentItem())
     {
-        QString filename=ui->locallistWidget->currentItem()->text();
+        QString filename=ui->locallistWidget->currentItem()->toolTip();
         QMediaContent  mediaContent = QMediaContent(QUrl::fromLocalFile(filename));
         for(int i=0;i<m_playlist->mediaCount();i++){
             if(mediaContent==m_playlist->media(i))
@@ -818,3 +822,4 @@ void MainWindow::on_localBtnDel_clicked()
         }
     }
 }
+
