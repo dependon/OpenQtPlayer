@@ -748,7 +748,12 @@ void MainWindow::on_fullScreenBtn_clicked()
     if (!this->isFullScreen())
     {
         showFullScreen();
-        ui->stackFrame->hide();
+//        ui->stackFrame->hide();
+        ui->stackFrame->setVisible(false);
+        if(m_actionFullscreen)
+        {
+            m_actionFullscreen->setText(tr("返回正常大小"));
+        }
         resizeMovieWindow();
         ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
         ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-restore"));
@@ -756,6 +761,11 @@ void MainWindow::on_fullScreenBtn_clicked()
     else {
         showNormal();
         //        ui->stackFrame->show();
+        if(m_actionFullscreen)
+        {
+            m_actionFullscreen->setText(tr("全屏"));
+        }
+        ui->ttbWidget->setVisible(true);
         resizeMovieWindow();
         ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
         ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-fullscreen"));

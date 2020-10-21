@@ -141,12 +141,12 @@ private:
 
 
     //右键菜单Action
-    QAction * m_actionPlay ;
-    QAction * m_actionopenFile ;
-    QAction * m_actionopenUrl  ;
-    QAction * m_actionInfo ;
-    QAction * m_actionFullscreen ;
-    QAction * m_actionCapture ;
+    QAction * m_actionPlay{nullptr} ;
+    QAction * m_actionopenFile{nullptr} ;
+    QAction * m_actionopenUrl {nullptr} ;
+    QAction * m_actionInfo{nullptr} ;
+    QAction * m_actionFullscreen {nullptr};
+    QAction * m_actionCapture{nullptr} ;
 };
 
 #endif // MAINWINDOW_H
