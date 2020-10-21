@@ -2,9 +2,9 @@ openqtmovie
 利用QMediaPlay(multimedia) qt的技术实现的一个简单的播放器
 2020/09/27第一次更新
 
-#build-dep（linux安装所需）
+#### Linux build-dep（linux安装所需）
 sudo apt-get install libqt5multimedia5 libqt5multimediawidgets5
-#build（linux编译和安装）
+#### Linux build（linux编译和安装）
 mkdir build
 cd build
 qmake ..
