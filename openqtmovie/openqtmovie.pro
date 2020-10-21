@@ -28,12 +28,14 @@ SOURCES += \
         main.cpp \
         ./view/mainwindow.cpp \
         ./model/normalAPI.cpp \
-    view/addurldialog.cpp
+    view/addurldialog.cpp \
+    application.cpp
 
 HEADERS += \
         ./view/mainwindow.h \
         ./model/normalAPI.h \
-    view/addurldialog.h
+    view/addurldialog.h \
+    application.h
 
 FORMS += \
         ./view/mainwindow.ui \
@@ -57,6 +59,10 @@ icons.files = $$PWD/image/play.svg
 
 dbus_service.path =  $$PREFIX/share/dbus-1/services
 dbus_service.files += $$PWD/com.openqtmovie.service
+
+#/opt/openqtmovie/setting/config.ini
+#setting.path = /tmp/openqtmovie/
+#setting.files += $$PWD/setting/config.ini
 
 INSTALLS += target icons desktop dbus_service
 

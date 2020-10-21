@@ -28,7 +28,7 @@ QStringList ApiGetListWidgetPaths(QListWidget *listWidget)
     QString line;
     while(row<(listWidget->count()))
     {
-        list << listWidget->item(row)->text();
+        list << listWidget->item(row)->toolTip();
         row++;
     }
     return list;

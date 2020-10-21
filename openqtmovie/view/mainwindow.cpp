@@ -7,6 +7,10 @@
 #include <QListWidgetItem>
 #include <QSettings>
 #include <QFileInfo>
+#include <QShortcut>
+#include <QDesktopWidget>
+#include <QContextMenuEvent>
+#include <QGraphicsView>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -70,26 +74,26 @@ void MainWindow::openFileandPlay(const QString &filename)
     }
     QFileInfo info(filePath);
     QString suffix="*."+info.suffix();
-//    qDebug()<<"是否为文件" <<info.isFile();
-//    qDebug()<<"1" <<info.path();
-//    qDebug()<<"2" <<info.absolutePath();
-//    qDebug()<<"3" <<info.canonicalPath();
+    //    qDebug()<<"是否为文件" <<info.isFile();
+    //    qDebug()<<"1" <<info.path();
+    //    qDebug()<<"2" <<info.absolutePath();
+    //    qDebug()<<"3" <<info.canonicalPath();
     qDebug()<<"33" <<info.canonicalFilePath();
-//    qDebug()<<"4" <<info.filePath();
-//    qDebug()<<"5" <<info.fileName();
-//    qDebug()<<"6" <<info.baseName();
-//    qDebug()<<"7" <<info.bundleName();
-//    qDebug()<<"8" <<info.completeBaseName();
-//    qDebug()<<"9" <<info.dir().path();
-//    qDebug()<<"10" <<info.dir().absolutePath();
-//    qDebug()<<"11" <<info.dir().canonicalPath();
-//    qDebug()<<"12" <<info.dir().absolutePath();
-//    qDebug()<<"13" <<info.dir().dirName();
-//    qDebug()<<"14" <<info.absoluteDir().path();
-//    qDebug()<<"15" <<info.absoluteDir().absolutePath();
-//    qDebug()<<"16" <<info.absoluteDir().canonicalPath();
-//    qDebug()<<"17" <<info.absoluteDir().absolutePath();
-//    qDebug()<<"18" <<info.absoluteDir().dirName();
+    //    qDebug()<<"4" <<info.filePath();
+    //    qDebug()<<"5" <<info.fileName();
+    //    qDebug()<<"6" <<info.baseName();
+    //    qDebug()<<"7" <<info.bundleName();
+    //    qDebug()<<"8" <<info.completeBaseName();
+    //    qDebug()<<"9" <<info.dir().path();
+    //    qDebug()<<"10" <<info.dir().absolutePath();
+    //    qDebug()<<"11" <<info.dir().canonicalPath();
+    //    qDebug()<<"12" <<info.dir().absolutePath();
+    //    qDebug()<<"13" <<info.dir().dirName();
+    //    qDebug()<<"14" <<info.absoluteDir().path();
+    //    qDebug()<<"15" <<info.absoluteDir().absolutePath();
+    //    qDebug()<<"16" <<info.absoluteDir().canonicalPath();
+    //    qDebug()<<"17" <<info.absoluteDir().absolutePath();
+    //    qDebug()<<"18" <<info.absoluteDir().dirName();
     filePath=info.canonicalFilePath();
     if(!filePath.isEmpty() && info.isFile()){
         if(filePath.contains("file://"))
@@ -141,12 +145,30 @@ void MainWindow::openFileandPlay(const QString &filename)
     }
 }
 
+void MainWindow::openUrlStr(const QString &str)
+{
+    if(!str.isEmpty())
+    {
+        m_player->setMedia(QUrl(str));
+        m_player->play();
+        setWindowTitle("online Src");
+    }
+}
+
+void MainWindow::openUrlDialogShow()
+{
+    addUrlDialog dialog;
+    dialog.exec();
+}
+
 void MainWindow::init()
 {
     initUi();
     initNew();
     initConnect();
     initAllSetting();
+    initKey();
+    initRightMenu();
 }
 
 void MainWindow::initNew()
@@ -171,6 +193,12 @@ void MainWindow::initNew()
 
     m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
 
+    ui->graphicsView->viewport()->installEventFilter(this);
+    ui->graphicsView->viewport()->setMouseTracking (true);
+//    ui->ttbWidget->installEventFilter(this);
+//    this->setMouseTracking (true);
+//    setAttribute(Qt::WA_TransparentForMouseEvents, true);
+
 
 
 }
@@ -186,6 +214,9 @@ void MainWindow::initConnect()
     connect(m_player, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), SLOT(slotmediaStatusChange(QMediaPlayer::MediaStatus)));
     connect(m_player, SIGNAL(stateChanged(QMediaPlayer::State)), SLOT(slotstateChange(QMediaPlayer::State)));
     connect(ui->voiceSlider, SIGNAL(valueChanged(int)), this, SLOT(slotsvoiceChange(int)));
+
+    connect(App,&Application::sigopenUrlStr,this,&MainWindow::openUrlStr);
+
 }
 
 void MainWindow::initUi()
@@ -197,7 +228,86 @@ void MainWindow::initUi()
     setWindowTitle(tr("Movie"));
     setWindowIcon(QIcon(":/image/play.svg"));
 
+    QDesktopWidget *deskdop = QApplication::desktop();
+    move((deskdop->width() - this->width())/2, (deskdop->height() - this->height())/2);
 
+}
+
+void MainWindow::initKey()
+{
+    //左右快进
+    connect(new QShortcut(QKeySequence(Qt::Key_Left),this), &QShortcut::activated, this, [=]{
+        m_player->setPosition(m_player->position() - 5000);
+    });
+    connect(new QShortcut(QKeySequence(Qt::Key_Right),this), &QShortcut::activated, this, [=]{
+        m_player->setPosition(m_player->position() + 5000);
+    });
+
+    //左右切换影片
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Left),this), &QShortcut::activated, this, &MainWindow::on_previousBtn_clicked);
+    connect(new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Right),this), &QShortcut::activated, this, &MainWindow::on_nextBtn_clicked);
+
+    //暂停和播放
+    connect(new QShortcut(QKeySequence(Qt::Key_Enter),this), &QShortcut::activated, this, &MainWindow::on_playBtn_clicked);
+    connect(new QShortcut(QKeySequence(Qt::Key_Return),this), &QShortcut::activated, this, &MainWindow::on_playBtn_clicked);
+
+    //全屏或者返回
+    connect(new QShortcut(QKeySequence(Qt::ALT + Qt::Key_Return),this), &QShortcut::activated, this, &MainWindow::on_fullScreenBtn_clicked);
+    connect(new QShortcut(QKeySequence(Qt::ALT + Qt::Key_Enter),this), &QShortcut::activated, this, &MainWindow::on_fullScreenBtn_clicked);
+
+    //音量加减
+    connect(new QShortcut(QKeySequence(Qt::Key_Up),this), &QShortcut::activated, this, [=]{
+
+        int addVulume=m_player->volume()+5;
+        if(addVulume>100)
+        {
+            m_player->setVolume(100);
+        }
+        else {
+            m_player->setVolume(addVulume);
+        }
+
+    });
+    connect(new QShortcut(QKeySequence(Qt::Key_Down),this), &QShortcut::activated, this, [=]{
+        int downVulume=m_player->volume()-5;
+        if(downVulume<0)
+        {
+            m_player->setVolume(0);
+        }
+        else {
+            m_player->setVolume(downVulume);
+        }
+    });
+
+    //打开文件
+    connect(new QShortcut(QKeySequence(Qt::Key_O),this), &QShortcut::activated, this, &MainWindow::openFiles);
+    connect(new QShortcut(QKeySequence(Qt::Key_U),this), &QShortcut::activated, this, &MainWindow::openUrlDialogShow);
+}
+
+void MainWindow::initRightMenu()
+{
+    m_RightClickMenu = new QMenu(this);
+
+    m_actionPlay = new QAction("播放/暂停", this);
+    m_actionopenFile = new QAction("打开文件", this);
+    m_actionopenUrl = new QAction("打开Url", this);
+    m_actionInfo = new QAction("影片信息", this);
+    m_actionFullscreen = new QAction("全屏", this);
+    m_actionCapture = new QAction("截图", this);
+
+    m_RightClickMenu->addAction(m_actionPlay);
+    m_RightClickMenu->addAction(m_actionopenFile);
+    m_RightClickMenu->addAction(m_actionopenUrl);
+    //    m_RightClickMenu->addAction(m_actionInfo);
+    m_RightClickMenu->addAction(m_actionFullscreen);
+    //    m_RightClickMenu->addAction(m_actionCapture);
+
+    connect(m_actionPlay, &QAction::triggered, this, &MainWindow::on_playBtn_clicked);
+    connect(m_actionopenFile, &QAction::triggered, this, &MainWindow::openFiles);
+    connect(m_actionopenUrl, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
+    //    connect(m_actionInfo, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
+    connect(m_actionFullscreen, &QAction::triggered, this, &MainWindow::on_fullScreenBtn_clicked);
+    //    connect(m_actionCapture, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
 }
 
 void MainWindow::resizeMovieWindow()
@@ -264,7 +374,10 @@ void MainWindow::initAllSetting()
             m_playlist->addMedia(QUrl::fromLocalFile(strLocalPath));
             //
             QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-            item->setText(strLocalPath);
+            item->setToolTip(strLocalPath);
+            item->setText(QFileInfo(strLocalPath).fileName());
+
+
             ui->locallistWidget->setCurrentItem(item);
         }
     }while(nullptr!=strLocalPath);
@@ -284,10 +397,14 @@ void MainWindow::initAllSetting()
         m_player->setMuted(true);
         ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
     }
-    else
+    else if(2==lastVoiceState)
     {
         m_player->setMuted(false);
         setMediaVoice(m_player->volume());
+    }
+    else
+    {
+        setMediaVoice(50);
     }
     ui->stackFrame->hide();
     resizeMovieWindow();
@@ -355,7 +472,8 @@ void MainWindow::openFiles()
                 m_playlist->addMedia(QUrl::fromLocalFile(filename));
                 m_localPaths <<filename;
                 QListWidgetItem *item=new QListWidgetItem(ui->locallistWidget);
-                item->setText(filename);
+                item->setText(info.fileName());
+                item->setToolTip(filename);
                 if(index==0)
                 {
                     ui->locallistWidget->setCurrentItem(item);
@@ -489,6 +607,51 @@ void MainWindow::showEvent(QShowEvent *event)
     return QMainWindow::showEvent(event);
 }
 
+void MainWindow::contextMenuEvent(QContextMenuEvent *event)
+{
+    if(m_RightClickMenu)
+    {
+        m_RightClickMenu->exec(QCursor::pos());
+    }
+//    event->accept();
+    return QMainWindow::contextMenuEvent(event);
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    return QMainWindow::mouseMoveEvent(event);
+}
+
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    this->setCursor(Qt::ArrowCursor);
+//    if (obj == ui->graphicsView)
+    {
+        if (this->isFullScreen() && event->type() == QEvent::MouseMove)
+        {
+            qDebug()<<obj->objectName();
+            {
+                QPoint pos = mapFromGlobal(QCursor::pos());
+                if (height() - 80 < pos.y()&& height() > pos.y())
+                {
+                    qDebug()<<"11111";
+                    qDebug()<<"height:" <<height() <<"pos.y:"<<pos.y();
+                    ui->ttbWidget->show();
+                }
+                else {
+                    qDebug()<<"22222";
+                    qDebug()<<"height:" <<height() <<"pos.y:"<<pos.y();
+                    ui->ttbWidget->hide();
+                }
+            }
+            return true;
+        }
+    }
+        return QObject::eventFilter(obj, event);
+
+}
+
 void MainWindow::on_previousBtn_clicked()
 {
 
@@ -592,7 +755,7 @@ void MainWindow::on_fullScreenBtn_clicked()
     }
     else {
         showNormal();
-        ui->stackFrame->show();
+        //        ui->stackFrame->show();
         resizeMovieWindow();
         ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
         ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-fullscreen"));
@@ -636,7 +799,7 @@ void MainWindow::on_hideStackBtn_clicked()
 
 void MainWindow::on_locallistWidget_itemDoubleClicked(QListWidgetItem *item)
 {
-    playExistenceLocalPath(item->text());
+    playExistenceLocalPath(item->toolTip());
 }
 
 void MainWindow::on_localBtnAdd_clicked()
@@ -648,7 +811,7 @@ void MainWindow::on_localBtnDel_clicked()
 {
     if(nullptr!=ui->locallistWidget->currentItem())
     {
-        QString filename=ui->locallistWidget->currentItem()->text();
+        QString filename=ui->locallistWidget->currentItem()->toolTip();
         QMediaContent  mediaContent = QMediaContent(QUrl::fromLocalFile(filename));
         for(int i=0;i<m_playlist->mediaCount();i++){
             if(mediaContent==m_playlist->media(i))
@@ -659,3 +822,4 @@ void MainWindow::on_localBtnDel_clicked()
         }
     }
 }
+
