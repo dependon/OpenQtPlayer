@@ -2,5 +2,19 @@
     <qresource prefix="/">
         <file>../image/background.jpg</file>
         <file>../image/play.svg</file>
+        <file>svg/document-new.svg</file>
+        <file>svg/media-playback-start.svg</file>
+        <file>svg/media-playback-stop.svg</file>
+        <file>svg/media-skip-backward.svg</file>
+        <file>svg/media-skip-forward.svg</file>
+        <file>svg/pane-hide.svg</file>
+        <file>svg/pane-show.svg</file>
+        <file>svg/view-fullscreen.svg</file>
+        <file>svg/view-restore.svg</file>
+        <file>svg/audio-volume-off-symbolic-dark.svg</file>
+        <file>svg/audio-volume-high-symbolic-dark.svg</file>
+        <file>svg/audio-volume-muted-symbolic-dark.svg</file>
+        <file>svg/media-playback-pause.svg</file>
+        <file>svg/audio-volume-low-symbolic-dark.svg</file>
     </qresource>
 </RCC>

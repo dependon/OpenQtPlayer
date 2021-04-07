@@ -284,8 +284,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="document-new">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/document-new.svg</normaloff>:/svg/document-new.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -316,8 +316,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="audio-volume-high">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/audio-volume-high-symbolic-dark.svg</normaloff>:/svg/audio-volume-high-symbolic-dark.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -400,8 +400,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="media-skip-forward">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/media-skip-backward.svg</normaloff>:/svg/media-skip-backward.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -432,8 +432,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="media-playback-start">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/media-playback-start.svg</normaloff>:/svg/media-playback-start.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -464,8 +464,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="media-skip-backward">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/media-skip-backward.svg</normaloff>:/svg/media-skip-backward.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -499,8 +499,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="media-playback-stop">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/media-playback-stop.svg</normaloff>:/svg/media-playback-stop.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -571,8 +571,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="pane-hide">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/pane-show.svg</normaloff>:/svg/pane-show.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -603,8 +603,8 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset theme="view-fullscreen">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset resource="qrc.qrc">
+               <normaloff>:/svg/view-fullscreen.svg</normaloff>:/svg/view-fullscreen.svg</iconset>
              </property>
              <property name="iconSize">
               <size>
@@ -629,7 +629,7 @@
      <x>0</x>
      <y>0</y>
      <width>894</width>
-     <height>36</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

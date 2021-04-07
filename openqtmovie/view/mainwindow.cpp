@@ -74,26 +74,9 @@ void MainWindow::openFileandPlay(const QString &filename)
     }
     QFileInfo info(filePath);
     QString suffix="*."+info.suffix();
-    //    qDebug()<<"是否为文件" <<info.isFile();
-    //    qDebug()<<"1" <<info.path();
-    //    qDebug()<<"2" <<info.absolutePath();
-    //    qDebug()<<"3" <<info.canonicalPath();
+
     qDebug()<<"33" <<info.canonicalFilePath();
-    //    qDebug()<<"4" <<info.filePath();
-    //    qDebug()<<"5" <<info.fileName();
-    //    qDebug()<<"6" <<info.baseName();
-    //    qDebug()<<"7" <<info.bundleName();
-    //    qDebug()<<"8" <<info.completeBaseName();
-    //    qDebug()<<"9" <<info.dir().path();
-    //    qDebug()<<"10" <<info.dir().absolutePath();
-    //    qDebug()<<"11" <<info.dir().canonicalPath();
-    //    qDebug()<<"12" <<info.dir().absolutePath();
-    //    qDebug()<<"13" <<info.dir().dirName();
-    //    qDebug()<<"14" <<info.absoluteDir().path();
-    //    qDebug()<<"15" <<info.absoluteDir().absolutePath();
-    //    qDebug()<<"16" <<info.absoluteDir().canonicalPath();
-    //    qDebug()<<"17" <<info.absoluteDir().absolutePath();
-    //    qDebug()<<"18" <<info.absoluteDir().dirName();
+
     filePath=info.canonicalFilePath();
     if(!filePath.isEmpty() && info.isFile()){
         if(filePath.contains("file://"))
@@ -395,7 +378,7 @@ void MainWindow::initAllSetting()
     if(1==lastVoiceState)
     {
         m_player->setMuted(true);
-        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
+        ui->VoiceBtn->setIcon(QIcon(":/svg/audio-volume-muted-symbolic-dark.svg"));
     }
     else if(2==lastVoiceState)
     {
@@ -408,7 +391,7 @@ void MainWindow::initAllSetting()
     }
     ui->stackFrame->hide();
     resizeMovieWindow();
-    ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
+    ui->hideStackBtn->setIcon(QIcon(":/svg/pane-show.svg"));
 }
 
 void MainWindow::mediaPlay()
@@ -445,11 +428,11 @@ void MainWindow::setMediaVoice(int index)
 {
     m_player->setVolume(index);
     if (index == 0) {
-        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
+        ui->VoiceBtn->setIcon(QIcon(":/svg/audio-volume-muted-symbolic-dark.svg"));
     } else if (index < 50) {
-        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-low"));
+        ui->VoiceBtn->setIcon(QIcon(":/svg/audio-volume-low-symbolic-dark.svg"));
     } else if (index <=100) {
-        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-medium"));
+        ui->VoiceBtn->setIcon(QIcon(":/svg/audio-volume-high-symbolic-dark.svg"));
     }
 }
 
@@ -570,11 +553,11 @@ void MainWindow::slotsliderMoved(int index)
 void MainWindow::slotstateChange(QMediaPlayer::State state)
 {
     if (state == QMediaPlayer::PlayingState) {
-        ui->playBtn->setIcon(QIcon::fromTheme("media-playback-pause"));
+        ui->playBtn->setIcon(QIcon(":/svg/media-playback-pause.svg"));
     } else if (state == QMediaPlayer::PausedState) {
-        ui->playBtn->setIcon(QIcon::fromTheme("media-playback-start"));
+        ui->playBtn->setIcon(QIcon(":/svg/media-playback-start.svg"));
     } else if (state == QMediaPlayer::StoppedState) {
-        ui->playBtn->setIcon(QIcon::fromTheme("media-playback-start"));
+        ui->playBtn->setIcon(QIcon(":/svg/media-playback-start.svg"));
     }
 }
 
@@ -755,8 +738,8 @@ void MainWindow::on_fullScreenBtn_clicked()
             m_actionFullscreen->setText(tr("返回正常大小"));
         }
         resizeMovieWindow();
-        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
-        ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-restore"));
+        ui->hideStackBtn->setIcon(QIcon(":/svg/pane-show.svg"));
+        ui->fullScreenBtn->setIcon(QIcon(":/svg/view-restore.svg"));
     }
     else {
         showNormal();
@@ -767,8 +750,8 @@ void MainWindow::on_fullScreenBtn_clicked()
         }
         ui->ttbWidget->setVisible(true);
         resizeMovieWindow();
-        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
-        ui->fullScreenBtn->setIcon(QIcon::fromTheme("view-fullscreen"));
+        ui->hideStackBtn->setIcon(QIcon(":/svg/pane-hide.svg"));
+        ui->fullScreenBtn->setIcon(QIcon(":/svg/view-fullscreen.svg"));
     }
 }
 
@@ -779,7 +762,7 @@ void MainWindow::on_VoiceBtn_clicked()
         setMediaVoice(m_player->volume());
     } else {
         m_player->setMuted(true);
-        ui->VoiceBtn->setIcon(QIcon::fromTheme("audio-volume-muted"));
+        ui->VoiceBtn->setIcon(QIcon(":/svg/audio-volume-muted-symbolic-dark.svg"));
     }
 }
 
@@ -796,14 +779,14 @@ void MainWindow::on_hideStackBtn_clicked()
         QTimer::singleShot(50,[=]{
             resizeMovieWindow();
         });
-        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-show"));
+        ui->hideStackBtn->setIcon(QIcon(":/svg/pane-show.svg"));
     }
     else {
         ui->stackFrame->show();
         QTimer::singleShot(50,[=]{
             resizeMovieWindow();
         });
-        ui->hideStackBtn->setIcon(QIcon::fromTheme("pane-hide"));
+        ui->hideStackBtn->setIcon(QIcon(":/svg/pane-hide.svg"));
     }
 }
 
