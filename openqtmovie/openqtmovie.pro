@@ -49,22 +49,22 @@ isEmpty(PREFIX){
     PREFIX = /usr
 }
 
-target.path = /opt/$${TARGET}/bin
+target.path = /opt/durapps/openqtmovie
 
 desktop.path = $$PREFIX/share/applications/
 desktop.files = $$PWD/openqtmovie.desktop
 
-icons.path = $$PREFIX/share/$${TARGET}/icon
-icons.files = $$PWD/image/play.svg
-
 dbus_service.path =  $$PREFIX/share/dbus-1/services
 dbus_service.files += $$PWD/com.openqtmovie.service
+
+other.path=/opt/durapps/openqtmovie
+other.files= $$PWD/view/svg/video_player.svg
 
 #/opt/openqtmovie/setting/config.ini
 #setting.path = /tmp/openqtmovie/
 #setting.files += $$PWD/setting/config.ini
 
-INSTALLS += target icons desktop dbus_service
+INSTALLS += target desktop dbus_service other
 
 DISTFILES += \
 com.openQtMovie.service
