@@ -820,7 +820,8 @@ void MainWindow::on_localBtnDel_clicked()
 
 void MainWindow::slotGrabCapture()
 {
-    QPixmap pix = QPixmap::grabWidget(ui->graphicsView);
+
+    QPixmap pix = ui->graphicsView->grab();
     QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) +"/" + \
             QDateTime::currentDateTime().toString()+QString::number(QDateTime::currentMSecsSinceEpoch())+".png";
     pix.save(path);
