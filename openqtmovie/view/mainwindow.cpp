@@ -12,6 +12,7 @@
 #include <QContextMenuEvent>
 #include <QGraphicsView>
 #include <QStandardPaths>
+#include <QDesktopServices>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -272,19 +273,20 @@ void MainWindow::initRightMenu()
 {
     m_RightClickMenu = new QMenu(this);
 
-    m_actionPlay = new QAction("播放/暂停", this);
-    m_actionopenFile = new QAction("打开文件", this);
-    m_actionopenUrl = new QAction("打开Url", this);
-    m_actionInfo = new QAction("影片信息", this);
-    m_actionFullscreen = new QAction("全屏", this);
-    m_actionCapture = new QAction("截图", this);
-
+    m_actionPlay = new QAction(tr("播放/暂停"), this);
+    m_actionopenFile = new QAction(tr("打开文件"), this);
+    m_actionopenUrl = new QAction(tr("打开Url"), this);
+    m_actionInfo = new QAction(tr("影片信息"), this);
+    m_actionFullscreen = new QAction(tr("全屏"), this);
+    m_actionCapture = new QAction(tr("截图"), this);
+    m_actionDisplayFile=new QAction(tr("显示文件所在地址"),this);
     m_RightClickMenu->addAction(m_actionPlay);
     m_RightClickMenu->addAction(m_actionopenFile);
     m_RightClickMenu->addAction(m_actionopenUrl);
     //    m_RightClickMenu->addAction(m_actionInfo);
     m_RightClickMenu->addAction(m_actionFullscreen);
     m_RightClickMenu->addAction(m_actionCapture);
+    m_RightClickMenu->addAction(m_actionDisplayFile);
     //    m_RightClickMenu->addAction(m_actionCapture);
 
     connect(m_actionPlay, &QAction::triggered, this, &MainWindow::on_playBtn_clicked);
@@ -293,6 +295,7 @@ void MainWindow::initRightMenu()
     //    connect(m_actionInfo, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
     connect(m_actionFullscreen, &QAction::triggered, this, &MainWindow::on_fullScreenBtn_clicked);
     connect(m_actionCapture, &QAction::triggered, this, &MainWindow::slotGrabCapture);
+    connect(m_actionDisplayFile, &QAction::triggered, this, &MainWindow::slotDisplayFileManager);
 }
 
 void MainWindow::resizeMovieWindow()
@@ -820,10 +823,19 @@ void MainWindow::on_localBtnDel_clicked()
 
 void MainWindow::slotGrabCapture()
 {
-
     QPixmap pix = ui->graphicsView->grab();
     QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) +"/" + \
             QDateTime::currentDateTime().toString()+QString::number(QDateTime::currentMSecsSinceEpoch())+".png";
     pix.save(path);
+}
+
+void MainWindow::slotDisplayFileManager()
+{
+    if(m_player){
+        QUrl url = m_player->currentMedia().canonicalUrl();
+        QString localPath=url.toString();
+        QFileInfo info(localPath);
+        QDesktopServices::openUrl(info.dir().path());
+    }
 }
 

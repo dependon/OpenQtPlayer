@@ -120,6 +120,8 @@ private slots:
     void on_localBtnDel_clicked();
 
     void slotGrabCapture();
+
+    void slotDisplayFileManager();
 private:
     Ui::MainWindow *ui;
 
@@ -147,6 +149,7 @@ private:
     QAction * m_actionInfo{nullptr} ;
     QAction * m_actionFullscreen {nullptr};
     QAction * m_actionCapture{nullptr} ;
+    QAction * m_actionDisplayFile{nullptr} ;
 };
 
 #endif // MAINWINDOW_H
