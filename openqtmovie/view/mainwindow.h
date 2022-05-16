@@ -119,7 +119,7 @@ private slots:
 
     void on_localBtnDel_clicked();
 
-
+    void slotGrabCapture();
 private:
     Ui::MainWindow *ui;
 

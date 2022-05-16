@@ -11,6 +11,7 @@
 #include <QDesktopWidget>
 #include <QContextMenuEvent>
 #include <QGraphicsView>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -283,6 +284,7 @@ void MainWindow::initRightMenu()
     m_RightClickMenu->addAction(m_actionopenUrl);
     //    m_RightClickMenu->addAction(m_actionInfo);
     m_RightClickMenu->addAction(m_actionFullscreen);
+    m_RightClickMenu->addAction(m_actionCapture);
     //    m_RightClickMenu->addAction(m_actionCapture);
 
     connect(m_actionPlay, &QAction::triggered, this, &MainWindow::on_playBtn_clicked);
@@ -290,7 +292,7 @@ void MainWindow::initRightMenu()
     connect(m_actionopenUrl, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
     //    connect(m_actionInfo, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
     connect(m_actionFullscreen, &QAction::triggered, this, &MainWindow::on_fullScreenBtn_clicked);
-    //    connect(m_actionCapture, &QAction::triggered, this, &MainWindow::openUrlDialogShow);
+    connect(m_actionCapture, &QAction::triggered, this, &MainWindow::slotGrabCapture);
 }
 
 void MainWindow::resizeMovieWindow()
@@ -814,5 +816,13 @@ void MainWindow::on_localBtnDel_clicked()
             }
         }
     }
+}
+
+void MainWindow::slotGrabCapture()
+{
+    QPixmap pix = QPixmap::grabWidget(ui->graphicsView);
+    QString path = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) +"/" + \
+            QDateTime::currentDateTime().toString()+QString::number(QDateTime::currentMSecsSinceEpoch())+".png";
+    pix.save(path);
 }
 
