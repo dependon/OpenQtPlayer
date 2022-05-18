@@ -49,17 +49,20 @@ isEmpty(PREFIX){
     PREFIX = /usr
 }
 
-target.path = /usr/bin
+target.path = /opt/apps/com.github.openqtplayer/files/bin/
 
 desktop.path = $$PREFIX/share/applications/
-desktop.files = $$PWD/openQtPlayer.desktop
+desktop.files = $$PWD/com.github.openqtplayer.desktop
 
-icon.path =/usr/share/icons
+icon.path=/opt/apps/com.github.openqtplayer/entries/icons
 icon.files= $$PWD/view/svg/video_player.svg
 
 #/opt/openqtplayer/setting/config.ini
 #setting.path = /tmp/openqtplayer/
 #setting.files += $$PWD/setting/config.ini
+
+info.path=/opt/apps/com.github.openqtplayer/
+info.files= $$PWD/info/*
 
 INSTALLS += target desktop icon
 
