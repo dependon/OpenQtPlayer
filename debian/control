@@ -9,8 +9,8 @@ Build-Depends: debhelper (>=9), qt5-qmake, qtbase5-dev, pkg-config,
 Standards-Version: 1.0.0
 Homepage: http://www.deepin.org
 
-Package: openqtmovie
+Package: com.github.openqtplayer
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: libqt5libqgtk2, kimageformat-plugins
-Description: openqtmovie.
+Description: com.github.openqtplayer.
