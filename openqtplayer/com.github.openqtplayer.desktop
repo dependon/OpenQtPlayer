@@ -1,12 +1,11 @@
 [Desktop Entry]
-Categories=Player;openqtplayer
+Categories=Application;
 Comment=openqtplayer
 Comment[zh_CN]=开源Qt播放器
-Encoding=UTF-8
-Exec=opt/apps/com.github.openqtplayer/files/bin/openqtplayer %U
-GenericName=Player
+Exec=/opt/apps/com.github.openqtplayer/files/bin/openqtplayer %F
+GenericName=openqtplayer
 GenericName[zh_CN]=开源Qt播放器
-Icon=video_player
+Icon=openqtplayer
 MimeType=audio/ac3;audio/mp4;audio/mpeg;audio/vnd.rn-realaudio;audio/vorbis;audio/x-adpcm;audio/x-matroska;audio/x-mp2;audio/x-mp3;audio/x-ms-wma;audio/x-vorbis;audio/x-wav;audio/mpegurl;audio/x-mpegurl;audio/x-pn-realaudio;audio/x-scpls;audio/aac;audio/flac;audio/ogg;video/avi;video/mp4;video/flv;video/mpeg;video/quicktime;video/vnd.rn-realvideo;video/x-matroska;video/x-ms-asf;video/x-msvideo;video/x-ms-wmv;video/x-ogm+ogg;video/x-theora;video/webm;
 Name=openqtplayer
 Name[zh_CN]=开源Qt播放器
@@ -14,4 +13,3 @@ StartupNotify=false
 Terminal=false
 Type=Application
 Version=1.0.0.0
-X-Deepin-Vendor=user-custom

@@ -49,22 +49,34 @@ isEmpty(PREFIX){
     PREFIX = /usr
 }
 
+
+CONFIG(release, debug|release) {
+    TRANSLATIONS = $$files($$PWD/translations/*.ts)
+    #遍历目录中的ts文件，调用lrelease将其生成为qm文件
+    for(tsfile, TRANSLATIONS) {
+        qmfile = $$replace(tsfile, .ts$, .qm)
+        system(lrelease $$tsfile -qm $$qmfile) | error("Failed to lrelease")
+    }
+}
+translations.path = /opt/apps/com.github.openqtplayer/files/bin/translations
+translations.files = $$PWD/translations/*.qm
+
 target.path = /opt/apps/com.github.openqtplayer/files/bin/
 
-desktop.path = $$PREFIX/share/applications/
+desktop.path = /opt/apps/com.github.openqtplayer/entries/applications
 desktop.files = $$PWD/com.github.openqtplayer.desktop
 
 icon.path=/opt/apps/com.github.openqtplayer/entries/icons
-icon.files= $$PWD/view/svg/video_player.svg
+icon.files= $$PWD/view/svg/openqtplayer.svg
 
 #/opt/openqtplayer/setting/config.ini
 #setting.path = /tmp/openqtplayer/
 #setting.files += $$PWD/setting/config.ini
 
 info.path=/opt/apps/com.github.openqtplayer/
-info.files= $$PWD/info/*
+info.files= $$PWD/info/info
 
-INSTALLS += target desktop icon
+INSTALLS += target desktop icon info translations
 
 
 RESOURCES += \
