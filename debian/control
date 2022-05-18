@@ -1,7 +1,7 @@
-Source: openqtmovie
+Source: com.github.openqtplayer
 Section: utils
 Priority: optional
-Maintainer: Deepin Packages Builder <packages@deepin.com>
+Maintainer: liuminghang <packages@deepin.com>
 Build-Depends: debhelper (>=9), qt5-qmake, qtbase5-dev, pkg-config,
  qttools5-dev-tools, libqt5opengl5-dev, 
  qtmultimedia5-dev,  libmtdev-dev, 
