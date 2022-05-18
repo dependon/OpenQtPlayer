@@ -8,7 +8,7 @@ QT       += core gui multimedia multimediawidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 CONFIG -= app_bundle
-TARGET = openqtmovie
+TARGET = openqtplayer
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -49,25 +49,20 @@ isEmpty(PREFIX){
     PREFIX = /usr
 }
 
-target.path = /opt/durapps/openqtmovie
+target.path = /usr/bin
 
 desktop.path = $$PREFIX/share/applications/
-desktop.files = $$PWD/openqtmovie.desktop
+desktop.files = $$PWD/openQtPlayer.desktop
 
-dbus_service.path =  $$PREFIX/share/dbus-1/services
-dbus_service.files += $$PWD/com.openqtmovie.service
+icon.path =/usr/share/icons
+icon.files= $$PWD/view/svg/video_player.svg
 
-other.path=/opt/durapps/openqtmovie
-other.files= $$PWD/view/svg/video_player.svg
-
-#/opt/openqtmovie/setting/config.ini
-#setting.path = /tmp/openqtmovie/
+#/opt/openqtplayer/setting/config.ini
+#setting.path = /tmp/openqtplayer/
 #setting.files += $$PWD/setting/config.ini
 
-INSTALLS += target desktop dbus_service other
+INSTALLS += target desktop icon
 
-DISTFILES += \
-com.openQtMovie.service
 
 RESOURCES += \
     view/qrc.qrc
